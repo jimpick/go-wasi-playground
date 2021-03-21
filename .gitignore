@@ -1,3 +1,6 @@
 *.wasm
 *.swp
 hello
+node_modules
+.cache
+dist
