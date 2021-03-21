@@ -65,14 +65,21 @@ import { lowerI64Imports } from '@wasmer/wasm-transformer'
 
 // Let's write handler for the fetchCommand property of the WasmTerminal Config.
 const fetchCommandHandler = async ({ args }) => {
+  console.log('Jim fetchCommand', args)
   let commandName = args[0]
   // Let's return a "CallbackCommand" if our command matches a special name
-  if (commandName === 'callback-command') {
+  if (commandName === 'demo') {
+    let response  = await fetch('/demo.wasm')
+    let wasmBinary = new Uint8Array(await response.arrayBuffer())
+    return wasmBinary
+    /*
     const callbackCommand = async (options, wasmFs) => {
       return `Callback Command Working! Options: ${options}, fs: ${wasmFs}`
     }
     return callbackCommand
+    */
   }
+
 
   // Let's fetch a wasm Binary from WAPM for the command name.
   const wasmBinary = await fetchCommandFromWAPM({ args })
@@ -89,7 +96,7 @@ const wasmTerminal = new WasmTerminal({
 })
 
 // Let's print out our initial message
-wasmTerminal.print('Hello World!')
+wasmTerminal.print("Type 'demo' to run demo.wasm")
 
 // Let's bind our Wasm terminal to it's container
 const containerElement = document.querySelector('#root')
