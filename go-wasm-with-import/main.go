@@ -2,6 +2,7 @@ package main
 
 import (
         "syscall/js"
+	"time"
 )
 
 func add(this js.Value, i []js.Value) interface{} {
@@ -11,10 +12,14 @@ func add(this js.Value, i []js.Value) interface{} {
 }
 
 func main() {
-        c := make(chan struct{}, 0)
+        // c := make(chan struct{}, 0)
 
-        js.Global().Set("add", js.FuncOf(add))
+        // js.Global().Set("add", js.FuncOf(add))
 
         println("WASM Go Initialized 2")
-        <-c // wait forever
+	for {
+		println("Sleep")
+		time.Sleep(1000 * time.Millisecond)
+	}
+        // <-c // wait forever
 }

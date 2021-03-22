@@ -170,6 +170,7 @@
 			}
 
 			const loadValue = (addr) => {
+        console.log('Jim wasm_exec loadValue this.mem', this.mem)
 				const f = this.mem.getFloat64(addr, true);
 				if (f === 0) {
 					return undefined;
@@ -306,7 +307,6 @@
 
 					// func scheduleTimeoutEvent(delay int64) int32
 					"runtime.scheduleTimeoutEvent": (sp) => {
-            console.log('Jim runtime.scheduleTimeoutEvent', sp)
 						sp >>>= 0;
 						const id = this._nextCallbackTimeoutID;
 						this._nextCallbackTimeoutID++;
@@ -360,8 +360,10 @@
 
 					// func valueGet(v ref, p string) ref
 					"syscall/js.valueGet": (sp) => {
+            console.log('Jim syscall/js.valueGet sp', sp)
 						sp >>>= 0;
 						const result = Reflect.get(loadValue(sp + 8), loadString(sp + 16));
+            console.log('Jim syscall/js.valueGet result', result)
 						sp = this._inst.exports.getsp() >>> 0; // see comment above
 						storeValue(sp + 32, result);
 					},
@@ -565,11 +567,14 @@
 				offset += 8;
 			});
 
-			this._inst.exports.run(argc, argv);
-			if (this.exited) {
-				this._resolveExitPromise();
-			}
-			await this._exitPromise;
+      console.log('Jim this._inst.exports', this._inst.exports)
+      // this._inst.exports.run(argc, argv);
+     
+      if (this.exited) {
+        this._resolveExitPromise();
+      }
+
+      await this._exitPromise;
 		}
 
 		_resume() {

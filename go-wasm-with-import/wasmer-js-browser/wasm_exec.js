@@ -170,6 +170,10 @@
 			}
 
 			const loadValue = (addr) => {
+        if (!this.mem) {
+          console.error('Jim wasm_exec loadValue this.mem', this.mem)
+          return undefined
+        }
 				const f = this.mem.getFloat64(addr, true);
 				if (f === 0) {
 					return undefined;
@@ -306,7 +310,6 @@
 
 					// func scheduleTimeoutEvent(delay int64) int32
 					"runtime.scheduleTimeoutEvent": (sp) => {
-            console.log('Jim runtime.scheduleTimeoutEvent', sp)
 						sp >>>= 0;
 						const id = this._nextCallbackTimeoutID;
 						this._nextCallbackTimeoutID++;
@@ -360,6 +363,7 @@
 
 					// func valueGet(v ref, p string) ref
 					"syscall/js.valueGet": (sp) => {
+            console.log('Jim syscall/js.valueGet', sp)
 						sp >>>= 0;
 						const result = Reflect.get(loadValue(sp + 8), loadString(sp + 16));
 						sp = this._inst.exports.getsp() >>> 0; // see comment above
@@ -508,7 +512,9 @@
 				throw new Error("Go.run: WebAssembly.Instance expected");
 			}
 			this._inst = instance;
+      console.log('Jim this._inst.exports', this._inst.exports)
 			this.mem = new DataView(this._inst.exports.mem.buffer);
+      console.log('Jim this.mem', this.mem)
 			this._values = [ // JS values that Go currently has references to, indexed by reference id
 				NaN,
 				0,
@@ -565,11 +571,13 @@
 				offset += 8;
 			});
 
-			this._inst.exports.run(argc, argv);
-			if (this.exited) {
-				this._resolveExitPromise();
-			}
-			await this._exitPromise;
+      if (this._inst.exports.run) {
+        this._inst.exports.run(argc, argv);
+        if (this.exited) {
+          this._resolveExitPromise();
+        }
+        await this._exitPromise;
+      }
 		}
 
 		_resume() {
