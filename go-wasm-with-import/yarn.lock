@@ -13,3 +13,8 @@ wasm-feature-detect@^1.2.2:
   version "1.2.10"
   resolved "https://registry.yarnpkg.com/wasm-feature-detect/-/wasm-feature-detect-1.2.10.tgz#f14384e2b03b1e20a901b3303ee5ab32d816d44d"
   integrity sha512-rXaUUtV7khnL4FJP8sbuA+cOky0RWar1w41TEIpeRzYUzbZR4rFFlA9FINLWDji+5WSt+L6Q3gP+aPgGbmORVQ==
+
+web-worker@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/web-worker/-/web-worker-1.0.0.tgz#c7ced4e1eb6227636ada35056a9e5a477414e4d0"
+  integrity sha512-BzuMqeKVkKKwHV6tJuwePFcxYMxvC97D448mXTgh/CxXAB4sRtoV26gRPN+JDxsXRR7QZyioMV9O6NzQaASf7Q==
