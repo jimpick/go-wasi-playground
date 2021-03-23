@@ -15,8 +15,8 @@ if (isMainThread) {
     const worker = new Worker(__filename)
     // worker.on('message', resolve)
     worker.on('message', msg => {
-      console.log('Message', msg)
-      console.log('Shared', sharedUint32Array[1])
+      // console.log('Message', msg)
+      // console.log('Shared', sharedUint32Array[1])
     })
     worker.postMessage(sharedUint32Array)
     worker.on('error', reject)
@@ -47,7 +47,7 @@ if (isMainThread) {
     const wasm = await WebAssembly.compile(fs.readFileSync('./main-wasi.wasm'))
     // const wasmFixed = await lowerI64Imports(wasm)
     const instance = await WebAssembly.instantiate(wasm, importObject)
-    go.run(instance)
+    // go.run(instance)
     /*
     setTimeout(() => {
       console.log('Test')
@@ -65,7 +65,7 @@ if (isMainThread) {
     // let counter = 123
     parentPort.on('message', sharedUint32Array => {
       globalThis.jimFunc = () => {
-        console.log('jimFunc', sharedUint32Array[0])
+        // console.log('jimFunc', sharedUint32Array[0])
         sharedUint32Array[1]++
         parentPort.postMessage({ counter: sharedUint32Array[1] })
         return sharedUint32Array[0]

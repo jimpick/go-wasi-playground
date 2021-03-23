@@ -60,6 +60,7 @@ const startWasiTask =
 startWasiTask(wasmFilePath)
 */
 
+
 import WasmTerminal, { fetchCommandFromWAPM } from '@wasmer/wasm-terminal'
 import { lowerI64Imports } from '@wasmer/wasm-transformer'
 
@@ -72,12 +73,10 @@ const fetchCommandHandler = async ({ args }) => {
     let response  = await fetch('/demo.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
-    /*
-    const callbackCommand = async (options, wasmFs) => {
-      return `Callback Command Working! Options: ${options}, fs: ${wasmFs}`
-    }
+    // const callbackCommand = async (options, wasmFs) => {
+    //  return `Callback Command Working! Options: ${options}, fs: ${wasmFs}`
+    // }
     return callbackCommand
-    */
   }
 
 

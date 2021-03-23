@@ -1,13 +1,14 @@
+/*
 import { WASI } from '@wasmer/wasi'
 import browserBindings from '@wasmer/wasi/lib/bindings/browser'
 import { WasmFs } from '@wasmer/wasmfs'
-import { lowerI64Imports } from '@wasmer/wasm-transformer'
-import './wasm_exec.js'
+// import { lowerI64Imports } from '@wasmer/wasm-transformer'
+import './wasm_exec_wasi.js'
 
 const go = new Go()
-const importObject = go.importObject
 
 const wasmFilePath = '/main-wasi.wasm'  // Path to our WASI module
+// const wasmFilePath = '/demo.wasm'  // Path to our WASI module
 //const echoStr      = 'Hello World!'    // Text string to echo
 // Instantiate new WASI and WasmFs Instances
 // IMPORTANT:
@@ -49,20 +50,14 @@ const startWasiTask =
 
     // Instantiate the WebAssembly file
     let wasmModule = await WebAssembly.compile(wasmBytes);
-    let wasmFixed = await lowerI64Imports(wasmModule)
-    console.log('Jim importObject 1', importObject)
-    console.log('Jim importObject 2', {
+    // let wasmFixed = await lowerI64Imports(wasmModule)
+    const importObject = {
        ...wasi.getImports(wasmModule),
-    }) 
-    console.log('Jim importObject 3', {
-       ...wasi.getImports(wasmModule),
-       ...importObject
-    }) 
-    let instance = await WebAssembly.instantiate(wasmFixed, {
-       ...wasi.getImports(wasmModule),
-       ...importObject
-    });
-    go.run(instance)
+       ...go.importObject
+    } 
+    console.log('Jim importObject', importObject)
+    let instance = await WebAssembly.instantiate(wasmModule, importObject)
+    // go.run(instance)
     wasi.start(instance)                      // Start the WASI instance
     let stdout = await wasmFs.getStdOut()     // Get the contents of stdout
     document.write(`Standard Output: ${stdout}`) // Write stdout data to the DOM
@@ -71,8 +66,8 @@ const startWasiTask =
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Everything starts here
 startWasiTask(wasmFilePath)
+*/
 
-/*
 import WasmTerminal, { fetchCommandFromWAPM } from '@wasmer/wasm-terminal'
 import { lowerI64Imports } from '@wasmer/wasm-transformer'
 
@@ -85,9 +80,12 @@ const fetchCommandHandler = async ({ args }) => {
     let response  = await fetch('/main-wasi.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
-    return callbackCommand
   }
-
+  if (commandName === 'demo') {
+    let response  = await fetch('/demo.wasm')
+    let wasmBinary = new Uint8Array(await response.arrayBuffer())
+    return wasmBinary
+  }
 
   // Let's fetch a wasm Binary from WAPM for the command name.
   const wasmBinary = await fetchCommandFromWAPM({ args })
@@ -111,4 +109,3 @@ const containerElement = document.querySelector('#root')
 wasmTerminal.open(containerElement)
 wasmTerminal.fit()
 wasmTerminal.focus()
-*/
