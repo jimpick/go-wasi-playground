@@ -6,6 +6,13 @@ async function run () {
   const importObject = go.importObject
   const wasm = await WebAssembly.compile(fs.readFileSync('./main.wasm'))
   const instance = await WebAssembly.instantiate(wasm, importObject)
+  /*
+  setTimeout(() => {
+    console.log('Test')
+    const result = globalThis.add(1, 2)
+    console.log('Result', result)
+  }, 1000)
+  */
   go.run(instance)
   setInterval(() => {}, 1 << 30)
   //setTimeout(() => {

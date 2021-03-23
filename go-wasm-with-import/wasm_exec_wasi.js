@@ -170,7 +170,7 @@
 			}
 
 			const loadValue = (addr) => {
-        console.log('Jim wasm_exec loadValue this.mem', this.mem)
+        // console.log('Jim wasm_exec loadValue this.mem', this.mem)
 				const f = this.mem.getFloat64(addr, true);
 				if (f === 0) {
 					return undefined;
@@ -308,6 +308,7 @@
 					// func scheduleTimeoutEvent(delay int64) int32
 					"runtime.scheduleTimeoutEvent": (sp) => {
 						sp >>>= 0;
+            console.log('Jim runtime.scheduleTimeoutEvent', sp)
 						const id = this._nextCallbackTimeoutID;
 						this._nextCallbackTimeoutID++;
 						this._scheduledTimeouts.set(id, setTimeout(
@@ -329,6 +330,7 @@
 					"runtime.clearTimeoutEvent": (sp) => {
 						sp >>>= 0;
 						const id = this.mem.getInt32(sp + 8, true);
+            console.log('Jim runtime.clearTimeoutEvent', sp, id)
 						clearTimeout(this._scheduledTimeouts.get(id));
 						this._scheduledTimeouts.delete(id);
 					},
@@ -362,15 +364,18 @@
 					"syscall/js.valueGet": (sp) => {
             console.log('Jim syscall/js.valueGet sp', sp)
 						sp >>>= 0;
+            console.log('Jim syscall/js.valueGet sp2', sp)
 						const result = Reflect.get(loadValue(sp + 8), loadString(sp + 16));
             console.log('Jim syscall/js.valueGet result', result)
 						sp = this._inst.exports.getsp() >>> 0; // see comment above
+            console.log('Jim syscall/js.valueGet sp3', sp)
 						storeValue(sp + 32, result);
 					},
 
 					// func valueSet(v ref, p string, x ref)
 					"syscall/js.valueSet": (sp) => {
 						sp >>>= 0;
+            console.log('Jim syscall/js.valueset sp', sp)
 						Reflect.set(loadValue(sp + 8), loadString(sp + 16), loadValue(sp + 32));
 					},
 

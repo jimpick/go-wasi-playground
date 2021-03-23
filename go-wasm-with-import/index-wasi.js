@@ -19,12 +19,25 @@ async function run () {
   // const wasmFixed = await lowerI64Imports(wasm)
   const instance = await WebAssembly.instantiate(wasm, importObject)
   go.run(instance)
+  /*
+  setTimeout(() => {
+    console.log('Test')
+    const result = globalThis.add(1, 2)
+    console.log('Result', result)
+  }, 1000)
+  */
+  globalThis.jim = 'Hi'
+  /*
+  setInterval(() => {
+    console.log('Tick')
+  }, 1000)
+  */
+  let counter = 123
+  globalThis.jimFunc = () => {
+    console.log('jimFunc', counter)
+    return counter++
+  }
   wasi.start(instance)                      // Start the WASI instance
-  //setTimeout(() => {
-  //  console.log('Test')
-    // const result = globalThis.add(1, 2)
-    // console.log('Result', result)
-  //}, 1000)
   setInterval(() => {}, 1 << 30)
 }
 run()
