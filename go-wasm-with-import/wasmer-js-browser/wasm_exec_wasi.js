@@ -503,7 +503,7 @@
 						this.mem.setUint8(sp + 48, 1);
 					},
 
-					"syscall/js.jsDebug": (value) => {
+					"debug": (value) => {
 						console.log(value);
 					},
 				}
@@ -586,7 +586,6 @@
 			if (this.exited) {
 				throw new Error("Go program has already exited");
 			}
-      console.log('Calling resume')
 			this._inst.exports.resume();
 			if (this.exited) {
 				this._resolveExitPromise();
@@ -594,10 +593,8 @@
 		}
 
 		_makeFuncWrapper(id) {
-      console.log('_makeFuncWrapper')
 			const go = this;
 			return function () {
-        console.log('In wrapper')
 				const event = { id: id, this: this, args: arguments };
 				go._pendingEvent = event;
 				go._resume();
