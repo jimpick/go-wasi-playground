@@ -1,0 +1,33 @@
+{
+	"folders": [
+                {
+                        "path": "."
+                },
+                {
+                        "path": "../extern/lotus-modified"
+                }
+        ],
+	"settings": {
+                "workbench.colorTheme": "Solarized Dark",
+                "go.toolsEnvVars": {
+                        "GOOS": "js",
+                        "GOARCH": "wasm",
+                        "GOFLAGS": "-tags=clientretrieve",
+                        "GO111MODULE": "on",
+                },
+                "go.overwriteGoplsMiddleware": {
+                        "env": {
+                                "GOOS": "js",
+                                "GOARCH": "wasm",
+                                "GOFLAGS": "-tags=clientretrieve"
+                        }
+                },
+                "gopls": {
+                        "env": {
+                                "GOOS": "js",
+                                "GOARCH": "wasm",
+                                "GOFLAGS": "-tags=clientretrieve"
+                        }
+                }
+        }
+}

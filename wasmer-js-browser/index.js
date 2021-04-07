@@ -64,6 +64,10 @@ startWasiTask(wasmFilePath)
 import WasmTerminal, { fetchCommandFromWAPM } from '@jimpick/wasm-terminal'
 import { lowerI64Imports } from '@wasmer/wasm-transformer'
 
+window.requestsForLotusHandler = function (...args) {
+  console.log('Jim window.requestsForLotusHandler', args)
+}
+
 // Let's write handler for the fetchCommand property of the WasmTerminal Config.
 const fetchCommandHandler = async ({ args }) => {
   console.log('Jim fetchCommand', args)
@@ -81,6 +85,11 @@ const fetchCommandHandler = async ({ args }) => {
   }
   if (commandName === 'demo-go') {
     let response  = await fetch('/demo-go.wasm')
+    let wasmBinary = new Uint8Array(await response.arrayBuffer())
+    return wasmBinary
+  }
+  if (commandName === 'api-client') {
+    let response  = await fetch('/api-client.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
   }
@@ -102,7 +111,8 @@ const wasmTerminal = new WasmTerminal({
 // Let's print out our initial message
 wasmTerminal.print("Type 'demo' to run demo.wasm\n")
 wasmTerminal.print("Type 'demo-wasi' to run demo-wasi.wasm\n")
-wasmTerminal.print("Type 'demo-go' to run demo-go.wasm")
+wasmTerminal.print("Type 'demo-go' to run demo-go.wasm\n")
+wasmTerminal.print("Type 'api-client' to run api-client.wasm")
 
 // Let's bind our Wasm terminal to it's container
 const containerElement = document.querySelector('#root')

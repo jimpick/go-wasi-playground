@@ -4,3 +4,4 @@ hello
 node_modules
 .cache
 dist
+extern
