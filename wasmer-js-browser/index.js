@@ -63,10 +63,9 @@ startWasiTask(wasmFilePath)
 
 import WasmTerminal, { fetchCommandFromWAPM } from '@jimpick/wasm-terminal'
 import { lowerI64Imports } from '@wasmer/wasm-transformer'
-
-window.requestsForLotusHandler = function (...args) {
-  console.log('Jim window.requestsForLotusHandler', args)
-}
+import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
+import { mainnet } from '@filecoin-shipyard/lotus-client-schema'
+import { BrowserProvider } from './browser-provider'
 
 // Let's write handler for the fetchCommand property of the WasmTerminal Config.
 const fetchCommandHandler = async ({ args }) => {
@@ -89,6 +88,24 @@ const fetchCommandHandler = async ({ args }) => {
     return wasmBinary
   }
   if (commandName === 'api-client') {
+    const wsUrl = 'wss://lotus.jimpick.com/mainnet_api/0/node/rpc/v0'
+    const browserProvider = new BrowserProvider(wsUrl)
+    await browserProvider.connect()
+    window.requestsForLotusHandler = async (req, responseHandler) => {
+      const request = JSON.parse(req)
+      console.log('JSON-RPC request => Lotus', JSON.stringify(request))
+      async function waitForResult () {
+        try {
+          const result = await browserProvider.sendWs(request)
+          console.log('Jim result', JSON.stringify(result))
+          responseHandler(JSON.stringify(result))
+        } catch (e) {
+          console.error('JSON-RPC error', e.message)
+        }
+      }
+      waitForResult()
+    }
+
     let response  = await fetch('/api-client.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
