@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"syscall/js"
-	"time"
 
 	"github.com/filecoin-project/go-jsonrpc"
 	"github.com/filecoin-project/lotus/api/apistruct"
@@ -26,12 +25,6 @@ func main() {
 		panic(err)
 	}
 	defer closer()
-
-	fmt.Printf("Hello Jim5\n")
-	for i := 0; i < 5; i++ {
-		fmt.Printf(".\n")
-		time.Sleep(1 * time.Second)
-	}
 
 	tipset, err := api.ChainHead(context.Background())
 	if err != nil {

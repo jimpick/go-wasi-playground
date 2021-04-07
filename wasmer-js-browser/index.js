@@ -60,7 +60,6 @@ const startWasiTask =
 startWasiTask(wasmFilePath)
 */
 
-
 import WasmTerminal, { fetchCommandFromWAPM } from '@jimpick/wasm-terminal'
 import { lowerI64Imports } from '@wasmer/wasm-transformer'
 import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc'
@@ -73,22 +72,23 @@ const fetchCommandHandler = async ({ args }) => {
   let commandName = args[0]
   // Let's return a "CallbackCommand" if our command matches a special name
   if (commandName === 'demo') {
-    let response  = await fetch('/demo.wasm')
+    let response = await fetch('/demo.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
   }
   if (commandName === 'demo-wasi') {
-    let response  = await fetch('/demo-wasi.wasm')
+    let response = await fetch('/demo-wasi.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
   }
   if (commandName === 'demo-go') {
-    let response  = await fetch('/demo-go.wasm')
+    let response = await fetch('/demo-go.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
   }
   if (commandName === 'api-client') {
-    const wsUrl = 'wss://lotus.jimpick.com/mainnet_api/0/node/rpc/v0'
+    // const wsUrl = 'wss://lotus.jimpick.com/mainnet_api/0/node/rpc/v0'
+    const wsUrl = 'ws://127.0.0.1:7777/rpc/v0'
     const browserProvider = new BrowserProvider(wsUrl)
     await browserProvider.connect()
     window.requestsForLotusHandler = async (req, responseHandler) => {
@@ -98,6 +98,15 @@ const fetchCommandHandler = async ({ args }) => {
         try {
           const result = await browserProvider.sendWs(request)
           console.log('Jim result', JSON.stringify(result))
+          // Ganache fixups
+          if (request.method === 'Filecoin.ChainHead') {
+            console.log('Jim2')
+            for (const block of result.result.Blocks) {
+              console.log('Jim ts1', block.Timestamp)
+              block.Timestamp = Math.floor(block.Timestamp)
+              console.log('Jim ts2', block.Timestamp)
+            }
+          }
           responseHandler(JSON.stringify(result))
         } catch (e) {
           console.error('JSON-RPC error', e.message)
@@ -106,7 +115,7 @@ const fetchCommandHandler = async ({ args }) => {
       waitForResult()
     }
 
-    let response  = await fetch('/api-client.wasm')
+    let response = await fetch('/api-client.wasm')
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
   }

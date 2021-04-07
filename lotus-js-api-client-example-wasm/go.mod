@@ -15,4 +15,4 @@ require (
 
 replace github.com/filecoin-project/lotus => ../extern/lotus-modified
 
-replace github.com/filecoin-project/go-jsonrpc => github.com/jimpick/go-jsonrpc v0.0.0-20201109011442-669bac3b0e93
+replace github.com/filecoin-project/go-jsonrpc => ../extern/go-jsonrpc-wasm
