@@ -17,7 +17,7 @@
   "dependencies": {
     "@filecoin-shipyard/lotus-client-rpc": "^0.2.0",
     "@filecoin-shipyard/lotus-client-schema": "^3.0.0",
-    "@jimpick/wasm-terminal": "^0.12.0-1",
+    "@jimpick/wasm-terminal": "file:../../wasmer-js-go-hack/packages/wasm-terminal",
     "@wasmer/wasi": "^0.12.0",
     "@wasmer/wasm-transformer": "^0.12.0",
     "@wasmer/wasmfs": "^0.12.0",

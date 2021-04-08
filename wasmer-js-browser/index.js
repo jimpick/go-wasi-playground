@@ -119,6 +119,52 @@ const fetchCommandHandler = async ({ args }) => {
     let wasmBinary = new Uint8Array(await response.arrayBuffer())
     return wasmBinary
   }
+  if (commandName === 'lotus') {
+    const options = {}
+    // const wsUrl = 'ws://127.0.0.1:7777/rpc/v0'
+    const wsUrl = 'wss://lotus.jimpick.com/mainnet_api/0/node/rpc/v0'
+    const ganache = wsUrl.match(/127.0.0.1/)
+    if (!ganache) {
+      options.token = localStorage.getItem('token')
+    }
+    const browserProvider = new BrowserProvider(wsUrl, options)
+    await browserProvider.connect()
+    window.requestsForLotusHandler = async (req, responseHandler) => {
+      const request = JSON.parse(req)
+      console.log('JSON-RPC request => Lotus', JSON.stringify(request))
+      async function waitForResult () {
+        try {
+          // Ganache fixups
+          if (ganache) {
+            if (request.method === 'Filecoin.WalletBalance') {
+              request.params[0] = request.params[0].replace(/^f/, 't')
+            }
+          }
+          const result = await browserProvider.sendWs(request)
+          console.log('Jim result', JSON.stringify(result))
+          // Ganache fixups
+          if (ganache) {
+            if (request.method === 'Filecoin.ChainHead') {
+              for (const block of result.result.Blocks) {
+                block.Timestamp = Math.floor(block.Timestamp)
+              }
+            }
+            if (request.method === 'Filecoin.Version') {
+              result.result.BlockDelay = Number(result.result.BlockDelay)
+            }
+          }
+          responseHandler(JSON.stringify(result))
+        } catch (e) {
+          console.error('JSON-RPC error', e.message)
+        }
+      }
+      waitForResult()
+    }
+
+    let response = await fetch('/lotus.wasm')
+    let wasmBinary = new Uint8Array(await response.arrayBuffer())
+    return wasmBinary
+  }
 
   // Let's fetch a wasm Binary from WAPM for the command name.
   const wasmBinary = await fetchCommandFromWAPM({ args })
@@ -138,7 +184,8 @@ const wasmTerminal = new WasmTerminal({
 wasmTerminal.print("Type 'demo' to run demo.wasm\n")
 wasmTerminal.print("Type 'demo-wasi' to run demo-wasi.wasm\n")
 wasmTerminal.print("Type 'demo-go' to run demo-go.wasm\n")
-wasmTerminal.print("Type 'api-client' to run api-client.wasm")
+wasmTerminal.print("Type 'api-client' to run api-client.wasm\n")
+wasmTerminal.print("Type 'lotus' to run lotus.wasm\n")
 
 // Let's bind our Wasm terminal to it's container
 const containerElement = document.querySelector('#root')
