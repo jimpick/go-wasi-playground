@@ -1,0 +1,33 @@
+{
+  "name": "wasmer-js-browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Jim Pick (@jimpick)",
+  "license": "MIT/Apache-2 (Permissive License Stack)",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-static-files-copy": "^2.6.0"
+  },
+  "dependencies": {
+    "@filecoin-shipyard/lotus-client-rpc": "^0.2.0",
+    "@filecoin-shipyard/lotus-client-schema": "^3.0.0",
+    "@jimpick/wasm-terminal": "^0.12.0-1",
+    "@wasmer/wasi": "^0.12.0",
+    "@wasmer/wasm-transformer": "^0.12.0",
+    "@wasmer/wasmfs": "^0.12.0",
+    "xterm": "^4.11.0"
+  },
+  "browserslist": [
+    "last 1 Chrome version"
+  ],
+  "staticFiles": {
+    "staticPath": "static",
+    "watcherGlob": "**/*.wasm"
+  }
+}
