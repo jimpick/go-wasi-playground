@@ -32,11 +32,12 @@ async function download (url, defaultLength, status) {
 async function preloadLotusWasm () {
   const status = document.getElementById('status')
   status.textContent = 'Fetching data... (6MB compressed)'
+  await fetch('/demo.wasm') // Temporary hack for wasm-terminal
   const compressed = await download('/lotus.wasm.gz', wasmSize, status)
   status.textContent = `Uncompressing data... (compressed size: ${compressed.byteLength} bytes)`
   const buffer = pako.ungzip(compressed)
   const size = +buffer.buffer.byteLength
-  status.textContent = `WASM fetched: ${size} bytes`
+  status.textContent = `WASM fetched and uncompressed: ${size} bytes`
   return buffer
 }
 const preloadedLotusPromise = preloadLotusWasm()
